@@ -12,6 +12,7 @@ import { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
 import type ReactSignatureCanvas from 'react-signature-canvas';
+import { generateCertificateAction } from '@/app/actions/generate-certificate';
 
 const SignaturePad = dynamic(() => import('react-signature-canvas'), { ssr: false }) as unknown as typeof ReactSignatureCanvas;
 const Particles = dynamic(() => import('@tsparticles/react'), { ssr: false });
@@ -298,19 +299,7 @@ export default function HonoraryGenerator() {
   };
 
   const checkRateLimit = () => {
-    const now = Date.now();
-    const historyStr = localStorage.getItem('txt8_gen_history');
-    let history: number[] = historyStr ? JSON.parse(historyStr) : [];
-    
-    history = history.filter(time => now - time < 60000); // within last 1 minute
-    
-    if (history.length >= 5) {
-      alert(isRTL ? "هدّي اللعب يا هكر! لا تخلص الحبر الملكي." : "Security Alert: Calm down hacker! Don't waste all the royal ink.");
-      return false;
-    }
-    
-    history.push(now);
-    localStorage.setItem('txt8_gen_history', JSON.stringify(history));
+    // Moved to server action
     return true;
   };
 
@@ -337,7 +326,7 @@ export default function HonoraryGenerator() {
       
       const logOrder = async () => {
         try {
-          await supabase.from('orders').insert([{
+          const res = await generateCertificateAction({
             customer_name: safeName,
             title_ar: isRTL ? safeTitle : FUNNY_TITLES_AR[0],
             title_en: !isRTL ? safeTitle : FUNNY_TITLES_EN[0],
@@ -345,8 +334,12 @@ export default function HonoraryGenerator() {
             payment_status: 'paid',
             language_preference: lang,
             template_id: selectedTemplateId,
-            badge_id: selectedBadgeId
-          }]);
+            badge_id: selectedBadgeId || null
+          });
+          
+          if (res?.error === 'RATE_LIMIT_EXCEEDED') {
+            alert(isRTL ? "هدّي اللعب يا هكر! لا تخلص الحبر الملكي." : "Security Alert: Calm down hacker! Don't waste all the royal ink.");
+          }
         } catch (e) {
           // Suppress network errors
         }
@@ -695,7 +688,7 @@ export default function HonoraryGenerator() {
                   ) : (
                     <div className="bg-white rounded border-2 border-royal overflow-hidden relative">
                       <SignaturePad 
-                        ref={sigCanvasRef as any}
+                        ref={sigCanvasRef as React.LegacyRef<ReactSignatureCanvas>}
                         penColor="black"
                         canvasProps={{ className: 'w-full h-32 cursor-crosshair' }}
                       />
