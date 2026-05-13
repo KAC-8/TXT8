@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-obsidian: #080808;
+  --color-royal: #2e6417;
+  --color-neon: #39ff14;
+  --font-inter: var(--font-inter), sans-serif;
+  --font-amiri: var(--font-amiri), serif;
+}
+
+body {
+  background-color: var(--color-obsidian);
+  color: white;
+  font-family: var(--font-inter);
+}
+
+.bg-animated-gradient {
+  background: radial-gradient(circle at top left, #1a2a1a 0%, #080808 50%),
+              radial-gradient(circle at bottom right, #112211 0%, #080808 50%);
+  background-size: 200% 200%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  20%, 100% { transform: translateX(200%) rotate(45deg); }
+}
+
+.animate-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+  pointer-events: none;
+}
+
+/* Custom scrollbar for horizontal scroll */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-royal);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neon);
+}
+
+.glass-card {
+  background: rgba(20, 30, 20, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(46, 100, 23, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-neon);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+}
+
+@keyframes neonPulse {
+  0% { text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14; color: #39ff14; }
+  50% { text-shadow: 0 0 20px #39ff14, 0 0 30px #39ff14, 0 0 40px #39ff14; color: #fff; }
+  100% { text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14; color: #39ff14; }
+}
+
+.animate-neon-pulse {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.glass-card:hover {
+  border-color: var(--color-neon);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+}
+
+.font-arabic-title {
+  font-family: var(--font-amiri);
+}
