@@ -6,9 +6,18 @@ import { ShieldCheck, XCircle, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
+interface OrderData {
+  customer_name: string;
+  title_en?: string;
+  title_ar?: string;
+  payment_status: string;
+  created_at: string;
+  [key: string]: unknown;
+}
+
 export default function VerifyPage({ params }: { params: { serial: string } }) {
   const [status, setStatus] = useState<'loading' | 'valid' | 'invalid'>('loading');
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<OrderData | null>(null);
 
   // Note: Since params is a Promise in Next.js 15, we need to unwrap it if using it directly, 
   // or just use `React.use(params)` if it were an async server component. In client components, 

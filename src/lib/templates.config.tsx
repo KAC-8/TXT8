@@ -27,40 +27,7 @@ const WaxSeal = () => (
   </div>
 );
 
-export const templates: TemplateConfig[] = [
-  {
-    id: 'royal',
-    name: { ar: 'الديوان الملكي', en: 'Royal Decree' },
-    themeColor: '#78350f',
-    component: RoyalTemplate
-  },
-  {
-    id: 'cyber',
-    name: { ar: 'الهوية الرقمية', en: 'Cyber-ID' },
-    themeColor: '#22c55e',
-    isPremium: true,
-    component: CyberTemplate
-  },
-  {
-    id: 'galaxy',
-    name: { ar: 'صك كوكبي', en: 'Galaxy Title' },
-    themeColor: '#a855f7',
-    isPremium: true,
-    component: GalaxyTemplate
-  },
-  {
-    id: 'vintage',
-    name: { ar: 'مانشيت تاريخي', en: 'Vintage News' },
-    themeColor: '#525252',
-    component: VintageTemplate
-  },
-  {
-    id: 'meme',
-    name: { ar: 'بطاقة الهبد', en: 'Meme Card' },
-    themeColor: '#eab308',
-    component: MemeTemplate
-  }
-];
+
 
 // 1. The Royal Decree
 const RoyalTemplate: React.FC<TemplateProps> = ({ name, title, serial, isRTL, signatureDataUrl, badgeId, className = '' }) => (
@@ -363,3 +330,38 @@ const MemeTemplate: React.FC<TemplateProps> = ({ name, title, serial, isRTL, sig
 );
 
 import { BadgeRenderer } from './badges.config';
+
+export const templates: TemplateConfig[] = [
+  {
+    id: 'royal',
+    name: { ar: 'الديوان الملكي', en: 'Royal Decree' },
+    themeColor: '#78350f',
+    component: RoyalTemplate
+  },
+  {
+    id: 'cyber',
+    name: { ar: 'الهوية الرقمية', en: 'Cyber-ID' },
+    themeColor: '#22c55e',
+    isPremium: true,
+    component: CyberTemplate
+  },
+  {
+    id: 'galaxy',
+    name: { ar: 'صك كوكبي', en: 'Galaxy Title' },
+    themeColor: '#a855f7',
+    isPremium: true,
+    component: GalaxyTemplate
+  },
+  {
+    id: 'vintage',
+    name: { ar: 'مانشيت تاريخي', en: 'Vintage News' },
+    themeColor: '#525252',
+    component: VintageTemplate
+  },
+  {
+    id: 'meme',
+    name: { ar: 'بطاقة الهبد', en: 'Meme Card' },
+    themeColor: '#eab308',
+    component: MemeTemplate
+  }
+];

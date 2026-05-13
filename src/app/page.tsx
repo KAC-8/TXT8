@@ -11,7 +11,9 @@ import dynamic from 'next/dynamic';
 import { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 
-const SignaturePad = dynamic(() => import('react-signature-canvas'), { ssr: false });
+import type ReactSignatureCanvas from 'react-signature-canvas';
+
+const SignaturePad = dynamic(() => import('react-signature-canvas'), { ssr: false }) as unknown as typeof ReactSignatureCanvas;
 const Particles = dynamic(() => import('@tsparticles/react'), { ssr: false });
 
 const FUNNY_TITLES_AR = ['كبير المديرين التنفيذيين للتهرب', 'وزير شؤون النوم', 'عميد السحبات', 'مستشار كبسة معتمد', 'سفير النوايا السيئة'];
@@ -333,16 +335,23 @@ export default function HonoraryGenerator() {
       playRustleSound();
       triggerConfetti();
       
-      supabase.from('orders').insert([{
-        customer_name: safeName,
-        title_ar: isRTL ? safeTitle : FUNNY_TITLES_AR[0],
-        title_en: !isRTL ? safeTitle : FUNNY_TITLES_EN[0],
-        serial_number: serial,
-        payment_status: 'paid',
-        language_preference: lang,
-        template_id: selectedTemplateId,
-        badge_id: selectedBadgeId
-      }]).catch(() => {}); // Suppress console log
+      const logOrder = async () => {
+        try {
+          await supabase.from('orders').insert([{
+            customer_name: safeName,
+            title_ar: isRTL ? safeTitle : FUNNY_TITLES_AR[0],
+            title_en: !isRTL ? safeTitle : FUNNY_TITLES_EN[0],
+            serial_number: serial,
+            payment_status: 'paid',
+            language_preference: lang,
+            template_id: selectedTemplateId,
+            badge_id: selectedBadgeId
+          }]);
+        } catch (e) {
+          // Suppress network errors
+        }
+      };
+      logOrder();
       
     }, 2000);
   };
@@ -554,7 +563,7 @@ export default function HonoraryGenerator() {
                 speed: 1,
                 straight: false,
               },
-              number: { density: { enable: true, area: 800 }, value: 60 },
+              number: { density: { enable: true, width: 800, height: 800 }, value: 60 },
               opacity: { value: 0.5 },
               shape: { type: "circle" },
               size: { value: { min: 1, max: 3 } },
@@ -686,7 +695,7 @@ export default function HonoraryGenerator() {
                   ) : (
                     <div className="bg-white rounded border-2 border-royal overflow-hidden relative">
                       <SignaturePad 
-                        ref={sigCanvasRef}
+                        ref={sigCanvasRef as any}
                         penColor="black"
                         canvasProps={{ className: 'w-full h-32 cursor-crosshair' }}
                       />
