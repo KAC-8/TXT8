@@ -145,6 +145,62 @@ const AnimatedText = ({ text }: { text: string }) => {
   );
 };
 
+const MatrixRain = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+
+    const drops: number[] = [];
+    for (let x = 0; x < columns; x++) {
+      drops[x] = 1;
+    }
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#0F0';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    };
+
+    const interval = setInterval(draw, 33);
+    
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-80" />;
+};
+
 // Input Sanitization
 const sanitizeInput = (input: string) => {
   return input.replace(/[<>]/g, '').trim();
@@ -484,11 +540,9 @@ export default function HonoraryGenerator() {
     <div className={"min-h-screen bg-animated-gradient text-white flex flex-col " + (isRTL ? 'rtl' : 'ltr')} dir={isRTL ? 'rtl' : 'ltr'}>
       
       {showMatrix && (
-        <div className="fixed inset-0 z-[100] pointer-events-none bg-black/90 flex flex-col items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 text-green-500 font-mono text-sm leading-none opacity-50 whitespace-pre wrap break-all select-none overflow-hidden" style={{ textShadow: '0 0 5px #0f0' }}>
-            {Array.from({length: 200}).map((_, i) => "1010110001110101001101010 ".repeat(20)).join('')}
-          </div>
-          <h1 className="text-neon text-6xl font-black z-10 animate-pulse tracking-widest drop-shadow-[0_0_20px_rgba(57,255,20,1)]">
+        <div className="fixed inset-0 z-[100] pointer-events-none bg-black flex flex-col items-center justify-center overflow-hidden">
+          <MatrixRain />
+          <h1 className="text-neon text-6xl md:text-8xl font-black z-10 animate-pulse tracking-widest drop-shadow-[0_0_20px_rgba(57,255,20,1)] bg-black/50 p-8 rounded-3xl border-2 border-neon backdrop-blur-md">
             SYSTEM OVERRIDE
           </h1>
         </div>
