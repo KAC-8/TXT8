@@ -370,22 +370,25 @@ export default function HonoraryGenerator() {
     const progInt = simulateProgress();
     
     try {
-      const html2canvas = (await import('html2canvas')).default;
+      const { toPng } = await import('html-to-image');
       const jsPDF = (await import('jspdf')).default;
       
-      const canvas = await html2canvas(hiddenCertificateRef.current, { scale: 2, useCORS: true, logging: false });
+      const imgData = await toPng(hiddenCertificateRef.current, { cacheBust: true, pixelRatio: 2 });
       setDownloadProgress(90);
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      
+      const img = new window.Image();
+      img.src = imgData;
+      await new Promise((resolve) => (img.onload = resolve));
       
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pdfHeight = (img.height * pdfWidth) / img.width;
       
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save("TXT8-Legend-" + (name || 'Anonymous') + ".pdf");
       setDownloadProgress(100);
     } catch (error) {
-      // ignore
+      console.error(error);
     } finally {
       clearInterval(progInt);
       setTimeout(() => { setIsDownloading(false); setDownloadProgress(0); }, 500);
@@ -399,11 +402,10 @@ export default function HonoraryGenerator() {
     const progInt = simulateProgress();
     
     try {
-      const html2canvas = (await import('html2canvas')).default;
+      const { toPng } = await import('html-to-image');
       
-      const canvas = await html2canvas(hiddenCertificateRef.current, { scale: 2, useCORS: true, logging: false });
+      const imgData = await toPng(hiddenCertificateRef.current, { cacheBust: true, pixelRatio: 2 });
       setDownloadProgress(90);
-      const imgData = canvas.toDataURL('image/png');
       
       const link = document.createElement('a');
       link.download = "TXT8-Legend-" + (name || 'Anonymous') + ".png";
@@ -411,7 +413,7 @@ export default function HonoraryGenerator() {
       link.click();
       setDownloadProgress(100);
     } catch (error) {
-      // ignore
+      console.error(error);
     } finally {
       clearInterval(progInt);
       setTimeout(() => { setIsDownloading(false); setDownloadProgress(0); }, 500);
@@ -424,17 +426,16 @@ export default function HonoraryGenerator() {
     playClickSound();
     
     try {
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(hiddenSnapRef.current, { scale: 2, useCORS: true, logging: false });
+      const { toPng } = await import('html-to-image');
+      const imgData = await toPng(hiddenSnapRef.current, { cacheBust: true, pixelRatio: 2 });
       setDownloadProgress(90);
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
       
       const link = document.createElement('a');
-      link.download = "TXT8-Snap-" + (name || 'Anonymous') + ".jpg";
+      link.download = "TXT8-Snap-" + (name || 'Anonymous') + ".png";
       link.href = imgData;
       link.click();
     } catch (error) {
-      // ignore
+      console.error(error);
     } finally {
       setIsDownloadingSnap(false);
     }
@@ -442,7 +443,8 @@ export default function HonoraryGenerator() {
 
   const handleWhatsAppShare = () => {
     playClickSound();
-    const url = "https://txt8.app/verify/" + serial;
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = baseUrl + "/verify/" + serial;
     const text = isRTL 
       ? encodeURIComponent("أنا رسمياً حصلت على لقب [" + selectedTitle + "] من TXT8! شيكوا على صكي هنا: " + url)
       : encodeURIComponent("I officially claimed the title [" + selectedTitle + "] on TXT8! Check it out: " + url);
@@ -457,7 +459,8 @@ export default function HonoraryGenerator() {
 
   const handleXShare = () => {
     playClickSound();
-    const url = "https://txt8.app/verify/" + serial;
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = baseUrl + "/verify/" + serial;
     const text = isRTL 
       ? encodeURIComponent("أنا رسمياً حصلت على لقب [" + selectedTitle + "] من TXT8! شيكوا على صكي هنا: " + url)
       : encodeURIComponent("I officially claimed the title [" + selectedTitle + "] on TXT8! Check it out: " + url);
@@ -777,7 +780,7 @@ export default function HonoraryGenerator() {
                     : 'Share your certificate link below. If 5 people visit it, a permanent Golden Badge will be added to your certificate!'}
                 </p>
                 <div className="w-full flex items-center justify-between bg-black border border-gray-800 rounded p-4 mb-4">
-                  <span className="font-mono text-neon text-sm sm:text-base break-all">https://txt8.app/verify/{serial}</span>
+                  <span className="font-mono text-neon text-sm sm:text-base break-all">{typeof window !== 'undefined' ? window.location.origin : 'https://kac8.me'}/verify/{serial}</span>
                 </div>
                 <div className="w-full">
                   <div className="flex justify-between text-xs text-gray-500 mb-1 font-mono">
@@ -856,6 +859,27 @@ export default function HonoraryGenerator() {
                 {isDownloadingSnap ? <Loader2 className="animate-spin" size={20} /> : <Smartphone size={20} />}
                 {isRTL ? 'تحميل لسناب شات (طولي)' : 'Snapchat Format (Vertical)'}
               </motion.button>
+
+              <div className="flex justify-center items-center gap-4 mt-6 w-full max-w-sm">
+                <a 
+                  href="https://www.patreon.com/cw/kac8" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex-1 flex justify-center items-center gap-2 bg-[#111] hover:bg-[#ff424d]/10 border border-gray-800 hover:border-[#ff424d] text-gray-400 hover:text-[#ff424d] shadow-[0_0_15px_rgba(255,66,77,0.1)] hover:shadow-[0_0_20px_rgba(255,66,77,0.4)] px-4 py-3 rounded-xl transition-all text-sm font-bold uppercase tracking-wider"
+                >
+                  <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M15.386 0.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524zM0.003 23.537h4.22V.524H.003v23.013z"/></svg>
+                  Patreon
+                </a>
+                <a 
+                  href="https://www.paypal.com/paypalme/Khald982" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex-1 flex justify-center items-center gap-2 bg-[#111] hover:bg-[#0079c1]/10 border border-gray-800 hover:border-[#0079c1] text-gray-400 hover:text-[#0079c1] shadow-[0_0_15px_rgba(0,121,193,0.1)] hover:shadow-[0_0_20px_rgba(0,121,193,0.4)] px-4 py-3 rounded-xl transition-all text-sm font-bold uppercase tracking-wider"
+                >
+                  <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106z"/></svg>
+                  PayPal
+                </a>
+              </div>
 
               <button 
                 onClick={() => setShowSuccessView(false)}
@@ -996,7 +1020,7 @@ export default function HonoraryGenerator() {
 
               <div className="flex flex-col items-center gap-4 bg-black/50 p-8 rounded-3xl backdrop-blur-md border border-gray-800">
                  <p className="text-white text-4xl font-inter">{isRTL ? 'احصل على صكك الخاص من:' : 'Get your own certificate at:'}</p>
-                 <p className="text-neon text-5xl font-bold">TXT8.APP</p>
+                 <p className="text-neon text-5xl font-bold">{typeof window !== 'undefined' ? window.location.host : 'KAC8.ME'}</p>
               </div>
            </div>
         </div>
@@ -1007,15 +1031,26 @@ export default function HonoraryGenerator() {
           Developed by <a href="https://www.kac8.me/" target="_blank" rel="noopener noreferrer" onMouseEnter={() => setKac8Hovers(h => h + 1)} className="animate-neon-pulse font-bold tracking-widest inline-block transition-transform hover:scale-110 ml-1">KAC8.ME</a>
         </p>
         
-        <a 
-          href="https://buymeacoffee.com/kac8" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 bg-[#111] hover:bg-[#1a1a1a] border border-gray-800 hover:border-neon text-gray-400 hover:text-neon px-4 py-2 rounded-full transition-all text-xs font-bold uppercase tracking-wider"
-        >
-          <Coffee size={14} className="text-yellow-500" />
-          {isRTL ? 'ادعم المطور' : 'Support KAC8'}
-        </a>
+        <div className="flex items-center gap-4">
+          <a 
+            href="https://www.patreon.com/cw/kac8" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-[#111] hover:bg-[#ff424d]/10 border border-gray-800 hover:border-[#ff424d] text-gray-400 hover:text-[#ff424d] shadow-[0_0_15px_rgba(255,66,77,0.1)] hover:shadow-[0_0_20px_rgba(255,66,77,0.4)] px-4 py-2 rounded-full transition-all text-xs font-bold uppercase tracking-wider"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M15.386 0.524c-4.764 0-8.64 3.876-8.64 8.64 0 4.75 3.876 8.613 8.64 8.613 4.75 0 8.614-3.864 8.614-8.613C24 4.4 20.136.524 15.386.524zM0.003 23.537h4.22V.524H.003v23.013z"/></svg>
+            Patreon
+          </a>
+          <a 
+            href="https://www.paypal.com/paypalme/Khald982" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-[#111] hover:bg-[#0079c1]/10 border border-gray-800 hover:border-[#0079c1] text-gray-400 hover:text-[#0079c1] shadow-[0_0_15px_rgba(0,121,193,0.1)] hover:shadow-[0_0_20px_rgba(0,121,193,0.4)] px-4 py-2 rounded-full transition-all text-xs font-bold uppercase tracking-wider"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106z"/></svg>
+            PayPal
+          </a>
+        </div>
       </footer>
     </div>
   );
