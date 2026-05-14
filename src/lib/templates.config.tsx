@@ -177,6 +177,67 @@ export const createTemplate = (config: TemplateJSONConfig): React.FC<TemplatePro
 
 export const templatesJSON: TemplateJSONConfig[] = [
   {
+  "id": "wanted-poster",
+  "name": {
+    "ar": "مطلوب للعدالة",
+    "en": "Wanted Poster"
+  },
+  "themeColor": "#8b4513",
+  "wrapperClass": "w-full aspect-[1/1.414] bg-[#e8d5b5] text-[#3e2723] border-[16px] border-[#5d4037] p-8 shadow-2xl flex flex-col items-center justify-between",
+  "wrapperStyle": {
+    "backgroundImage": "url(\"data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E\")"
+  },
+  "headerContainerClass": "text-center w-full mt-4",
+  "headerTitleClass": "text-6xl md:text-8xl font-black uppercase tracking-widest font-serif text-[#3e2723]",
+  "headerTitleAr": "مطلوب",
+  "headerTitleEn": "WANTED",
+  "bodyContainerClass": "text-center flex-grow flex flex-col items-center justify-center w-full",
+  "preNameClass": "text-2xl font-serif font-bold mb-2",
+  "preNameAr": "حياً أو ميتاً",
+  "preNameEn": "DEAD OR ALIVE",
+  "nameClass": "text-4xl md:text-6xl font-black mt-4 font-serif text-[#212121] bg-white/50 px-8 py-4 border-4 border-[#3e2723] shadow-inner",
+  "titleClass": "text-2xl font-bold mt-8 text-red-800 font-serif",
+  "footerContainerClass": "w-full text-center border-t-4 border-[#3e2723] pt-4 mt-4 flex flex-col items-center",
+  "serialClass": "text-sm font-mono font-bold mt-2",
+  "qrContainerClass": "mt-4 p-2 bg-[#e8d5b5] border-4 border-[#3e2723]",
+  "qrFgColor": "#3e2723",
+  "decorations": [
+    {
+      "className": "top-8 left-8 text-4xl opacity-50",
+      "text": "★"
+    },
+    {
+      "className": "top-8 right-8 text-4xl opacity-50",
+      "text": "★"
+    }
+  ]
+},
+  {
+  "id": "fbi-most-wanted",
+  "name": {
+    "ar": "مطلوب للإف بي آي",
+    "en": "FBI Most Wanted"
+  },
+  "themeColor": "#000000",
+  "wrapperClass": "w-full aspect-[1/1.414] bg-white text-black border-[12px] border-black p-8 flex flex-col justify-between font-sans",
+  "headerContainerClass": "text-center border-b-8 border-black pb-4 mb-4",
+  "headerTitleClass": "text-4xl md:text-5xl font-black uppercase tracking-tighter",
+  "headerTitleAr": "مكتب التحقيقات الفيدرالي",
+  "headerTitleEn": "FEDERAL BUREAU OF INVESTIGATION",
+  "bodyContainerClass": "text-center flex-grow flex flex-col justify-center items-center",
+  "preNameClass": "text-3xl font-black uppercase bg-red-600 text-white px-4 py-1 mb-6",
+  "preNameAr": "أخطر المطلوبين",
+  "preNameEn": "MOST WANTED",
+  "nameClass": "text-5xl md:text-6xl font-black uppercase tracking-tight",
+  "titleClass": "text-xl font-bold mt-4 px-4 py-1 border-2 border-black uppercase",
+  "footerContainerClass": "w-full border-t-8 border-black pt-4 flex flex-col items-center",
+  "serialClass": "text-sm font-mono mt-2 font-bold",
+  "qrContainerClass": "p-2 mt-4",
+  "qrFgColor": "#000",
+  "qrBgColor": "#fff"
+},
+  
+  {
   "id": "gaming-1",
   "name": {
     "en": "Fortnite Pro",
