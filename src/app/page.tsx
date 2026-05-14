@@ -14,6 +14,9 @@ import { loadSlim } from "@tsparticles/slim";
 import type ReactSignatureCanvas from 'react-signature-canvas';
 import { generateCertificateAction } from '@/app/actions/generate-certificate';
 
+import { dict } from '@/lib/i18n';
+
+
 const SignaturePad = dynamic(() => import('react-signature-canvas'), { ssr: false }) as unknown as typeof ReactSignatureCanvas;
 const Particles = dynamic(() => import('@tsparticles/react'), { ssr: false });
 
@@ -219,6 +222,7 @@ export default function HonoraryGenerator() {
 
   const [lang, setLang] = useState<'ar' | 'en'>('ar');
   const isRTL = lang === 'ar';
+  const t = dict[lang];
   const titles = isRTL ? FUNNY_TITLES_AR : FUNNY_TITLES_EN;
 
   const [name, setName] = useState('');
@@ -226,6 +230,13 @@ export default function HonoraryGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSuccessView, setShowSuccessView] = useState(false);
   const [serial, setSerial] = useState('TX8-2026-0000');
+  const [username, setUsername] = useState('');
+  const [bio, setBio] = useState('');
+  const [socialX, setSocialX] = useState('');
+  const [socialInsta, setSocialInsta] = useState('');
+  const [socialGithub, setSocialGithub] = useState('');
+  const [profilePic, setProfilePic] = useState('');
+  const [activeTab, setActiveTab] = useState<'id' | 'prank'>('id');
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingSnap, setIsDownloadingSnap] = useState(false);
   
@@ -523,7 +534,9 @@ export default function HonoraryGenerator() {
     window.open("https://x.com/intent/tweet?text=" + text, '_blank');
   };
 
-  const ActiveTemplate = templates.find(t => t.id === selectedTemplateId)?.component || templates[0].component;
+  const effectiveTemplateId = activeTab === 'id' ? 'link-in-bio' : selectedTemplateId;
+  const ActiveTemplateConfig = templates.find(t => t.id === effectiveTemplateId) || templates[0];
+  const ActiveTemplate = ActiveTemplateConfig.component;
 
   const animatedName = name ? <AnimatedText text={name} /> : (isRTL ? '[الاسم هنا]' : '[Your Name]');
   const animatedTitle = <AnimatedText text={selectedTitle} />;
@@ -653,7 +666,7 @@ export default function HonoraryGenerator() {
                 />
 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">{isRTL ? 'اختر القالب' : 'Select Template'}</label>
+                  <label className="block text-sm text-gray-400 mb-2">{t.selectTemplate}</label>
                   <div className="flex gap-2 overflow-x-auto pb-2 snap-x scrollbar-thin scrollbar-thumb-royal scrollbar-track-transparent">
                     {templates.map(t => (
                       <button
@@ -674,7 +687,7 @@ export default function HonoraryGenerator() {
                   <input 
                     type="text" 
                     maxLength={40}
-                    placeholder={isRTL ? 'الاسم الكريم...' : 'Enter your name...'}
+                    placeholder={t.fullNamePlaceholder}
                     className="w-full p-4 glass-input rounded text-white focus:outline-none transition-colors"
                     value={name}
                     onChange={(e) => { setName(e.target.value); }}
@@ -711,7 +724,7 @@ export default function HonoraryGenerator() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">{isRTL ? 'اختر وسام (اختياري)' : 'Select Elite Badge (Optional)'}</label>
+                  <label className="block text-sm text-gray-400 mb-2">{t.selectBadge}</label>
                   <div className="flex gap-3 overflow-x-auto pb-2 snap-x scrollbar-thin scrollbar-thumb-royal scrollbar-track-transparent">
                     <button
                         onClick={() => { playDingSound(); setSelectedBadgeId(null); }}
@@ -787,6 +800,11 @@ export default function HonoraryGenerator() {
                     serial={serial}
                     isRTL={isRTL}
                     signatureDataUrl={signatureData}
+                          bio={bio}
+                          profilePic={profilePic}
+                          socialX={socialX}
+                          socialInsta={socialInsta}
+                          socialGithub={socialGithub}
                     badgeId={selectedBadgeId}
                   />
                 </div>
@@ -804,7 +822,7 @@ export default function HonoraryGenerator() {
                 animate={{ scale: 1 }}
                 className="text-4xl md:text-6xl font-black text-neon text-center drop-shadow-[0_0_20px_rgba(57,255,20,0.5)]"
               >
-                {isRTL ? 'أسطورة معتمدة!' : 'CERTIFIED LEGEND!'}
+                activeTab === 'id' ? t.successMsgId : t.successMsgPrank
               </motion.h2>
 
               <div className="w-full max-w-3xl glass-card p-4 rounded-2xl flex justify-center shadow-[0_0_30px_rgba(46,100,23,0.5)]">
@@ -815,6 +833,11 @@ export default function HonoraryGenerator() {
                     serial={serial}
                     isRTL={isRTL}
                     signatureDataUrl={signatureData}
+                          bio={bio}
+                          profilePic={profilePic}
+                          socialX={socialX}
+                          socialInsta={socialInsta}
+                          socialGithub={socialGithub}
                     badgeId={selectedBadgeId}
                   />
                 </div>
@@ -865,7 +888,7 @@ export default function HonoraryGenerator() {
                   className="w-full py-4 bg-black text-white border border-gray-700 font-bold rounded-xl shadow-lg hover:border-gray-500 transition-all flex items-center justify-center gap-2"
                 >
                   <svg viewBox="0 0 24 24" aria-hidden="true" className="w-5 h-5 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.964H5.078z"></path></svg>
-                  {isRTL ? 'شارك على X' : 'Share on X'}
+                  {t.shareX}
                 </motion.button>
 
                 <motion.button
@@ -875,7 +898,7 @@ export default function HonoraryGenerator() {
                   className="w-full py-4 bg-[#25D366] text-white font-bold rounded-xl shadow-lg hover:bg-[#128C7E] transition-all flex items-center justify-center gap-2"
                 >
                   <Smartphone size={20} />
-                  {isRTL ? 'شارك واتساب' : 'WhatsApp'}
+                  {t.shareWa}
                 </motion.button>
 
                 <div className="flex gap-2 w-full lg:col-span-2">
@@ -887,7 +910,7 @@ export default function HonoraryGenerator() {
                     className="w-1/2 py-4 bg-royal text-white font-bold rounded-xl shadow-lg hover:bg-royal/80 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {isDownloading ? <Loader2 className="animate-spin" size={20} /> : <Download size={20} />}
-                    {isRTL ? 'تحميل PDF' : 'Save PDF'}
+                    {t.savePdf}
                   </motion.button>
 
                   <motion.button
@@ -898,7 +921,7 @@ export default function HonoraryGenerator() {
                     className="w-1/2 py-4 bg-neon text-obsidian font-bold rounded-xl shadow-lg hover:bg-neon/80 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {isDownloading ? <Loader2 className="animate-spin" size={20} /> : <ImageIcon size={20} />}
-                    {isRTL ? 'تحميل صورة' : 'Save PNG'}
+                    {t.savePng}
                   </motion.button>
                 </div>
               </div>
@@ -911,7 +934,7 @@ export default function HonoraryGenerator() {
                 className="w-full max-w-sm py-4 bg-[#FFFC00] text-black font-bold rounded-xl shadow-lg hover:bg-[#e6e300] transition-all flex items-center justify-center gap-2 mt-4"
               >
                 {isDownloadingSnap ? <Loader2 className="animate-spin" size={20} /> : <Smartphone size={20} />}
-                {isRTL ? 'تحميل لسناب شات (طولي)' : 'Snapchat Format (Vertical)'}
+                {t.saveSnap}
               </motion.button>
 
               <div className="flex justify-center items-center gap-4 mt-6 w-full max-w-sm">
@@ -939,7 +962,7 @@ export default function HonoraryGenerator() {
                 onClick={() => setShowSuccessView(false)}
                 className="mt-8 text-gray-400 hover:text-white underline underline-offset-4 text-sm"
               >
-                {isRTL ? 'إصدار صك جديد' : 'Generate another one'}
+                {t.newId}
               </button>
             </motion.div>
           )}
@@ -1045,6 +1068,11 @@ export default function HonoraryGenerator() {
               serial={serial}
               isRTL={isRTL}
               signatureDataUrl={signatureData}
+                          bio={bio}
+                          profilePic={profilePic}
+                          socialX={socialX}
+                          socialInsta={socialInsta}
+                          socialGithub={socialGithub}
               badgeId={selectedBadgeId}
               className="w-[1122px] h-[793px] text-xl"
             />
@@ -1067,6 +1095,11 @@ export default function HonoraryGenerator() {
                   serial={serial}
                   isRTL={isRTL}
                   signatureDataUrl={signatureData}
+                          bio={bio}
+                          profilePic={profilePic}
+                          socialX={socialX}
+                          socialInsta={socialInsta}
+                          socialGithub={socialGithub}
                   badgeId={selectedBadgeId}
                   className="w-[900px] h-[636px] text-lg rounded-lg"
                 />

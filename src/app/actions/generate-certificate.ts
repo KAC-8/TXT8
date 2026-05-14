@@ -22,6 +22,11 @@ export async function generateCertificateAction(data: {
   language_preference: string;
   template_id: string;
   badge_id: string | null;
+  bio?: string;
+  profile_pic?: string;
+  social_x?: string;
+  social_insta?: string;
+  social_github?: string;
 }) {
   // IP-based Rate Limiting
   const headersList = await headers();
@@ -52,7 +57,12 @@ export async function generateCertificateAction(data: {
       payment_status: data.payment_status,
       language_preference: data.language_preference,
       template_id: data.template_id,
-      badge_id: data.badge_id
+      badge_id: data.badge_id,
+      bio: data.bio ? sanitize(data.bio) : null,
+      profile_pic: data.profile_pic ? sanitize(data.profile_pic) : null,
+      social_x: data.social_x ? sanitize(data.social_x) : null,
+      social_insta: data.social_insta ? sanitize(data.social_insta) : null,
+      social_github: data.social_github ? sanitize(data.social_github) : null
     }]);
 
     if (error) {

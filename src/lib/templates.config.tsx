@@ -9,6 +9,11 @@ export interface TemplateProps {
   isRTL: boolean;
   signatureDataUrl?: string | null;
   badgeId?: string | null;
+  bio?: string;
+  profilePic?: string;
+  socialX?: string;
+  socialInsta?: string;
+  socialGithub?: string;
   className?: string; // used for scaling or extra styles
 }
 
@@ -174,6 +179,62 @@ export const createTemplate = (config: TemplateJSONConfig): React.FC<TemplatePro
 // 100-TEMPLATE SCALABILITY ENGINE (JSON configs)
 // Paste JSON objects here to scale to 100+
 // ==========================================
+
+
+// Link-in-Bio Template
+const LinkInBioTemplate: React.FC<TemplateProps> = ({ name, title, serial, bio, profilePic, socialX, socialInsta, socialGithub, isRTL, className = '' }) => (
+  <div className={`w-full aspect-[1/1.414] bg-black text-white p-8 relative flex flex-col items-center overflow-hidden shadow-2xl border border-gray-800 rounded-3xl ${className}`} style={{ backgroundImage: 'radial-gradient(circle at 50% 0%, #112211 0%, #000 70%)' }}>
+    <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-neon shadow-[0_0_20px_rgba(57,255,20,0.4)] mb-4 shrink-0 bg-gray-900 flex items-center justify-center">
+      {profilePic ? (
+        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+      ) : (
+        <div className="text-neon text-4xl font-black">{typeof name === 'string' && name ? name.charAt(0).toUpperCase() : 'ID'}</div>
+      )}
+    </div>
+    
+    <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-1 text-center drop-shadow-md z-10">{name || (isRTL ? '[الاسم]' : '[Name]')}</h1>
+    <h2 className="text-neon font-mono text-sm md:text-base mb-4 tracking-widest uppercase bg-neon/10 px-4 py-1 rounded-full border border-neon/30 z-10">{title}</h2>
+    
+    <div className="z-10 text-gray-300 text-center text-sm md:text-base max-w-xs mb-8 opacity-80 leading-relaxed break-words relative overflow-hidden">
+      <p className="typing-effect">
+        {bio || (isRTL ? 'لا توجد نبذة حالياً...' : 'No bio provided...')}
+      </p>
+    </div>
+
+    <div className="w-full max-w-sm flex flex-col gap-3 z-10 mb-auto">
+      {socialX && (
+        <div className="w-full bg-[#111] hover:bg-[#1a1a1a] border border-gray-800 p-4 rounded-xl flex items-center justify-center gap-3 transition-colors">
+          <span className="font-bold text-sm tracking-wider">X (Twitter)</span>
+        </div>
+      )}
+      {socialInsta && (
+        <div className="w-full bg-[#111] hover:bg-[#1a1a1a] border border-gray-800 p-4 rounded-xl flex items-center justify-center gap-3 transition-colors">
+          <span className="font-bold text-sm tracking-wider">Instagram</span>
+        </div>
+      )}
+      {socialGithub && (
+        <div className="w-full bg-[#111] hover:bg-[#1a1a1a] border border-gray-800 p-4 rounded-xl flex items-center justify-center gap-3 transition-colors">
+          <span className="font-bold text-sm tracking-wider">GitHub</span>
+        </div>
+      )}
+      {!socialX && !socialInsta && !socialGithub && (
+        <div className="w-full bg-[#111] border border-gray-800 p-4 rounded-xl flex items-center justify-center opacity-50">
+          <span className="font-mono text-xs">{isRTL ? 'لا توجد روابط' : 'NO LINKS'}</span>
+        </div>
+      )}
+    </div>
+
+    <div className="mt-8 pt-4 border-t border-gray-800 w-full flex justify-between items-center z-10">
+       <div className="flex flex-col">
+         <span className="text-[10px] text-gray-500 tracking-widest uppercase">KAC8 ID VERIFIED</span>
+         <span className="font-mono text-xs text-neon">{serial}</span>
+       </div>
+       <div className="w-12 h-12 bg-white rounded-lg p-1">
+         <QRCodeSVG value={`https://kac8.me/verify/${serial}`} size={40} />
+       </div>
+    </div>
+  </div>
+);
 
 export const templatesJSON: TemplateJSONConfig[] = [
   {
@@ -3497,6 +3558,14 @@ export const templatesJSON: TemplateJSONConfig[] = [
     themeColor: '#22c55e',
     isPremium: true,
     wrapperClass: 'w-full aspect-[1.414/1] bg-black text-green-400 border-[4px] border-green-500 p-8 shadow-[0_0_50px_rgba(0,255,0,0.2)]',
+    decorations: [
+      {
+        className: 'bg-cyber-grid pointer-events-none'
+      },
+      {
+        className: 'top-0 left-0 w-full h-1 bg-green-500 shadow-[0_0_20px_#0f0] animate-pulse'
+      }
+    ],
     watermarkText: 'KAC8.ME',
     watermarkClass: 'bottom-4 right-1/2 translate-x-1/2 opacity-[0.03] text-8xl font-black tracking-tighter text-green-500 z-0',
     badgeClass: 'top-8 right-8 w-16 h-16 md:w-20 md:h-20',
@@ -3574,7 +3643,15 @@ export const templatesJSON: TemplateJSONConfig[] = [
     themeColor: '#a855f7',
     isPremium: true,
     wrapperClass: 'w-full aspect-[1.414/1] bg-[#0b0b1a] text-purple-100 border-2 border-purple-500/30 p-8 rounded-2xl shadow-[0_0_40px_rgba(138,43,226,0.3)]',
-    wrapperStyle: { backgroundImage: 'radial-gradient(circle at 50% 0%, #2a1b4d 0%, #0b0b1a 80%)' },
+    decorations: [
+      {
+        className: 'bg-deep-space pointer-events-none'
+      },
+      {
+        className: 'inset-0 opacity-40 pointer-events-none',
+        style: { backgroundImage: 'radial-gradient(white 1px, transparent 1px)', backgroundSize: '30px 30px', backgroundPosition: '0 0, 15px 15px' }
+      }
+    ],
     watermarkText: 'KAC8.ME',
     watermarkClass: 'bottom-4 right-1/2 translate-x-1/2 opacity-[0.03] text-8xl font-black tracking-tighter text-white z-0',
     badgeClass: 'top-8 right-8 w-16 h-16 md:w-20 md:h-20',
@@ -3720,6 +3797,11 @@ export const templatesJSON: TemplateJSONConfig[] = [
     themeColor: '#00ff00',
     isPremium: true,
     wrapperClass: 'w-full aspect-[1.414/1] bg-black text-[#00ff00] p-8 border-2 border-[#00ff00]/50 font-mono overflow-hidden',
+    decorations: [
+      {
+        className: 'bg-neural-network pointer-events-none'
+      }
+    ],
     watermarkText: '01010111 01000001 01001011 01000101 01010101 01010000',
     watermarkClass: 'inset-0 flex flex-wrap opacity-10 text-xs break-all leading-none pointer-events-none',
     badgeClass: 'top-8 right-8 w-16 h-16',
@@ -3773,10 +3855,18 @@ export const templatesJSON: TemplateJSONConfig[] = [
   }
 ];
 
-export const templates: TemplateConfig[] = templatesJSON.map(config => ({
-  id: config.id,
-  name: config.name,
-  themeColor: config.themeColor,
-  isPremium: config.isPremium,
-  component: createTemplate(config)
-}));
+export const templates: TemplateConfig[] = [
+  {
+    id: 'link-in-bio',
+    name: { ar: 'هوية Link-in-Bio', en: 'Link-in-Bio Profile' },
+    themeColor: '#39ff14',
+    component: LinkInBioTemplate
+  },
+  ...templatesJSON.map(config => ({
+    id: config.id,
+    name: config.name,
+    themeColor: config.themeColor,
+    isPremium: config.isPremium,
+    component: createTemplate(config)
+  }))
+];

@@ -10,6 +10,11 @@ CREATE TABLE public.orders (
     payment_status text DEFAULT 'paid'::text,
     language_preference text DEFAULT 'ar'::text,
     visits integer DEFAULT 0,
+    bio text,
+    profile_pic text,
+    social_x text,
+    social_insta text,
+    social_github text,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

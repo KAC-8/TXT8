@@ -6,6 +6,8 @@ import { ShieldCheck, XCircle, Loader2, ArrowLeft, Skull } from 'lucide-react';
 import { MatrixRain } from '@/components/MatrixRain';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { templates } from '@/lib/templates.config';
+import { badges } from '@/lib/badges.config';
 
 interface OrderData {
   customer_name: string;
@@ -161,6 +163,13 @@ export default function VerifyPage({ params }: { params: { serial: string } }) {
             <p className="text-sm text-gray-400 italic">
               {t.registryInfo}
             </p>
+
+            <Link 
+              href="/" 
+              className="mt-8 px-8 py-4 bg-neon text-black font-black uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(57,255,20,0.5)] hover:shadow-[0_0_30px_rgba(57,255,20,0.8)] transition-all hover:bg-white hover:scale-105"
+            >
+              {isRTL ? 'اصنع هويتك الرقمية الخاصة' : 'CREATE YOUR OWN ID'}
+            </Link>
           </motion.div>
         )}
 
