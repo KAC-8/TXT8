@@ -27,6 +27,14 @@ FOR SELECT
 TO public 
 USING (true);
 
+-- 5. Add RPC to increment visits
+CREATE OR REPLACE FUNCTION increment_visits(row_id uuid)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.orders SET visits = visits + 1 WHERE id = row_id;
+END;
+$$ LANGUAGE plpgsql;
+
 -- NOTE: No INSERT, UPDATE, or DELETE policies are created for the 'public' role.
 -- This strictly blocks frontend manipulation. Your Next.js Server Actions will use 
 -- the SUPABASE_SERVICE_ROLE_KEY, which automatically bypasses RLS to safely insert data.

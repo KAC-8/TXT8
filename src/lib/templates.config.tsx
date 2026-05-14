@@ -177,6 +177,46 @@ export const createTemplate = (config: TemplateJSONConfig): React.FC<TemplatePro
 
 export const templatesJSON: TemplateJSONConfig[] = [
   {
+  "id": "prank-hacker",
+  "name": {
+    "ar": "هاكر خطير",
+    "en": "Hacker ID"
+  },
+  "themeColor": "#ff0000",
+  "wrapperClass": "w-full aspect-[1.414/1] bg-black text-red-500 border-2 border-red-600 p-8 font-mono shadow-[0_0_50px_rgba(255,0,0,0.5)] overflow-hidden",
+  "wrapperStyle": {
+    "backgroundImage": "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 0, 0, 0.1) 2px, rgba(255, 0, 0, 0.1) 4px)"
+  },
+  "watermarkText": "MALWARE",
+  "watermarkClass": "inset-0 flex items-center justify-center opacity-[0.05] text-[150px] font-black tracking-widest text-red-600 pointer-events-none",
+  "badgeClass": "top-8 right-8 w-16 h-16 filter invert opacity-80",
+  "headerContainerClass": "text-left border-b-2 border-red-900 pb-2 mb-4",
+  "headerTitleClass": "text-red-600 text-2xl font-black uppercase tracking-widest animate-pulse",
+  "headerTitleAr": "تحذير أمني عالي",
+  "headerTitleEn": "CRITICAL SECURITY ALERT",
+  "bodyContainerClass": "text-left z-10 flex flex-col justify-center h-full",
+  "preNameClass": "text-xs text-red-800 uppercase mb-2",
+  "preNameAr": "تم اختراق الكيان:",
+  "preNameEn": "COMPROMISED ENTITY:",
+  "nameClass": "text-5xl md:text-6xl font-black text-red-500 mb-6 drop-shadow-[0_0_10px_rgba(255,0,0,0.8)]",
+  "titleClass": "text-xl text-black bg-red-600 px-4 py-2 font-bold inline-block uppercase",
+  "footerContainerClass": "w-full mt-auto border-t-2 border-red-900 pt-4 flex items-end justify-between z-10",
+  "serialContainerClass": "flex flex-col",
+  "serialLabelClass": "text-[10px] text-red-800",
+  "serialLabelAr": "كود الفيروس:",
+  "serialLabelEn": "VIRUS HASH:",
+  "serialClass": "text-xs font-mono text-red-500",
+  "qrContainerClass": "p-2 bg-red-950/30 border border-red-600",
+  "qrFgColor": "#ff0000",
+  "qrBgColor": "transparent",
+  "decorations": [
+    {
+      "className": "top-0 left-0 w-full h-1 bg-red-600 shadow-[0_0_20px_#f00] animate-pulse"
+    }
+  ]
+},
+  
+  {
   "id": "wanted-poster",
   "name": {
     "ar": "مطلوب للعدالة",

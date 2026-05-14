@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, XCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, XCircle, Loader2, ArrowLeft, Skull } from 'lucide-react';
+import { MatrixRain } from '@/components/MatrixRain';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
@@ -13,6 +14,8 @@ interface OrderData {
   payment_status: string;
   created_at: string;
   language_preference?: string;
+  template_id?: string;
+  id?: string;
   [key: string]: unknown;
 }
 
@@ -20,6 +23,7 @@ export default function VerifyPage({ params }: { params: { serial: string } }) {
   const [status, setStatus] = useState<'loading' | 'valid' | 'invalid'>('loading');
   const [data, setData] = useState<OrderData | null>(null);
   const [lang, setLang] = useState<'ar' | 'en'>('en');
+  const [malwareState, setMalwareState] = useState<'idle' | 'deploying' | 'done'>('idle');
 
   // Note: Since params is a Promise in Next.js 15, we need to unwrap it if using it directly, 
   // or just use `React.use(params)` if it were an async server component. In client components, 
@@ -48,7 +52,8 @@ export default function VerifyPage({ params }: { params: { serial: string } }) {
               title_ar: 'عميد السحبات',
               payment_status: 'paid',
               created_at: new Date().toISOString(),
-              language_preference: 'en'
+              language_preference: 'en',
+              template_id: 'prank-hacker'
             });
             setStatus('valid');
           }, 1500);
@@ -58,6 +63,11 @@ export default function VerifyPage({ params }: { params: { serial: string } }) {
         if (orderData.payment_status === 'paid') {
           setData(orderData);
           setLang(orderData.language_preference === 'ar' ? 'ar' : 'en');
+          if (orderData.id) {
+            supabase.rpc('increment_visits', { row_id: orderData.id }).then(({ error }) => {
+              if (error) console.error('Increment visits error:', error);
+            });
+          }
           setStatus('valid');
         } else {
           setStatus('invalid');
